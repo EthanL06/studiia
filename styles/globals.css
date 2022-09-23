@@ -61,7 +61,7 @@
   }
 
   .card {
-    perspective: 150rem;
+    perspective: 300rem;
     position: relative;
 
     @apply hover:cursor-pointer;

@@ -1,7 +1,8 @@
 import { PropsWithChildren, useState, useEffect } from "react";
 import Image from "next/image";
 
-import Logo from "../public/assets/studia_logo.svg";
+import { MagnifyingGlassIcon, MoonIcon } from "@heroicons/react/24/solid";
+import Logo from "@/assets/studia_logo.svg";
 
 type LinkData = {
   href: string;
@@ -32,7 +33,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`sticky top-0 z-50 flex h-full max-w-[2000px] items-center justify-between border-b-2 bg-white px-8 py-2 transition-shadow duration-200 ease-in-out 3xl:mx-[16%] ${
+      className={`sticky top-0 z-50 flex h-full items-center justify-between border-b-2 bg-white px-8 py-2 transition-shadow duration-200 ease-in-out 3xl:mx-[16%] ${
         scrolled ? "shadow-lg" : ""
       }`}
     >
@@ -50,35 +51,18 @@ const Navbar = () => {
       <div className="flex items-center gap-x-8">
         <div className="flex gap-x-3">
           <Button title={"Search"}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="3"
+            <MagnifyingGlassIcon
+              strokeWidth={1.75}
               className="h-6 w-6 stroke-slate-400"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-              />
-            </svg>
+            />
           </Button>
 
           <Button title={"Dark Mode"}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
+            <MoonIcon
+              strokeWidth={2.5}
               fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={3}
               className="h-6 w-6 stroke-slate-400"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"
-              />
-            </svg>
+            />
           </Button>
 
           <div className="flex items-center">
