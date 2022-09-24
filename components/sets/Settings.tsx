@@ -21,7 +21,7 @@ type Props = {
 
 const Settings = ({ author, authorImage }: Props) => {
   return (
-    <div className="mb-6 flex justify-between">
+    <div className=" mb-6 flex flex-col justify-between gap-y-4 xxs:flex-row">
       <div className="flex items-center gap-x-2">
         <img
           className="inline-block h-8 w-8 rounded-full"

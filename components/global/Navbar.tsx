@@ -39,16 +39,16 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`sticky top-0 z-50 flex h-full items-center justify-around border-b-2 bg-white px-8 py-2 transition-shadow duration-200 ease-in-out lg:justify-between 3xl:mx-[16%] ${
+      className={`sticky top-0 z-50 flex h-full items-center justify-between border-b-2 bg-white px-2 py-2 transition-shadow duration-200 ease-in-out sm:px-8  3xl:mx-[16%] ${
         scrolled ? "shadow-lg" : ""
       }`}
     >
       <a href="/" className="flex items-center">
         <Image src={Logo} height={48} alt="Studia Logo" />
-        <span className="text-4xl font-bold">Studiia</span>
+        <span className="hidden text-4xl font-bold md:block">Studiia</span>
       </a>
 
-      <div className="flex items-center gap-x-8 lg:ml-28">
+      <div className=" hidden items-center gap-x-8 sm:flex lg:ml-28">
         {links.map(({ href, label }) => (
           <NavLink key={href} href={href} label={label} />
         ))}

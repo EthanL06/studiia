@@ -10,12 +10,14 @@ import StatsGroup from "@/sets/StatsGroup";
 
 function Term({ term, definition }: { term: string; definition: string }) {
   return (
-    <div className="container relative flex flex-row justify-between gap-x-4 rounded-lg border-2 border-slate-200 bg-white p-4">
-      <div className="min-w-[40%] max-w-[40%] text-xl font-semibold">
+    <div className="container relative flex flex-col justify-between gap-y-4 gap-x-4 rounded-lg border-2 border-slate-200 bg-white p-4 sm:flex-row">
+      <div className="break-words text-xl font-semibold sm:w-[40%] sm:min-w-[40%] sm:max-w-[40%]">
         {term}
       </div>
-      <div className="border-l- rounded border-l-4"></div>
-      <div className="flex-grow text-sm font-normal">{definition}</div>
+      <div className="hidden rounded border-l-4 sm:block"></div>
+      <div className="flex-grow break-words text-sm font-normal">
+        {definition}
+      </div>
     </div>
   );
 }
@@ -25,14 +27,16 @@ const Home: NextPage = () => {
     <>
       <Navbar />
 
-      <div className="flex flex-col items-center">
-        <main className="mx-auto mt-10 flex w-[44rem] flex-col">
+      <div className="flex w-full flex-col items-center">
+        <main className="mt-10 flex w-full flex-col px-4 md:w-[44rem]">
           <HeaderInfo />
-          <StudyButtonGroup />
-          <Flashcard
-            term="Cohesion"
-            definition="An attraction between molecules of the same substance"
-          />
+          <div className="my-10 flex flex-col-reverse gap-y-8 xxs:flex-col">
+            <StudyButtonGroup />
+            <Flashcard
+              term="Cohesion"
+              definition="An attraction between molecules of the same substance"
+            />
+          </div>
           <Settings
             authorImage="https://thispersondoesnotexist.com/image"
             author="robinjr26"
@@ -40,7 +44,7 @@ const Home: NextPage = () => {
           <StatsGroup learning={3} reviewing={2} mastered={15} />
         </main>
 
-        <div className="relative mt-8 flex w-full justify-center rounded-t-3xl bg-slate-300/25 px-12 pt-10 pb-32 lg:px-[18rem]">
+        <div className="relative mt-8 flex w-full justify-center rounded-t-3xl bg-slate-300/25 px-6 pt-10 pb-32 sm:px-12 md:px-24 lg:px-[12rem]">
           <div className="flex flex-col gap-y-3">
             <div className="mb-4 text-3xl font-bold">20 terms</div>
 

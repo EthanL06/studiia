@@ -34,10 +34,7 @@ const Flashcard = ({ term, definition }: FlashCardProps) => {
 
   return (
     <Tilt tiltReverse={true} perspective={4000}>
-      <div
-        className={`card container mt-8 mb-10 ${click ? "rotate" : ""}`}
-        onClick={handleClick}
-      >
+      <div className={`card ${click ? "rotate" : ""}`} onClick={handleClick}>
         <Side
           type={Direction.Front}
           text={term}
@@ -88,6 +85,8 @@ const Side = ({
         <div className="flex w-full items-center justify-between gap-x-4 p-4 text-white">
           <button
             id="left"
+            title="Previous"
+            type="button"
             className="z-10 rounded-full p-2 hover:bg-black/10"
             onClick={handleClick}
           >
@@ -104,6 +103,8 @@ const Side = ({
 
           <button
             id="right"
+            title="Next"
+            type="button"
             className="z-10 rounded-full p-2 hover:bg-black/10"
             onClick={handleClick}
           >
@@ -118,7 +119,7 @@ const Side = ({
         </div>
       </div>
 
-      <div className="absolute left-0 right-0 -bottom-5 -z-10 mx-auto h-5 w-[33rem] rounded-b-[15px] bg-slate-200"></div>
+      <div className="absolute left-0 right-0 -bottom-5 -z-10 mx-auto hidden h-5 rounded-b-[15px] bg-slate-200 sm:block sm:w-[33rem]"></div>
     </div>
   );
 };
