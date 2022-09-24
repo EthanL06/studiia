@@ -27,7 +27,7 @@
   }
 
   .hover-underline-animation:hover:after {
-    transform: scaleX(0.75);
+    transform: scaleX(0.70);
     transform-origin: center;
   }
 
@@ -82,5 +82,18 @@
 
   .rotate .card-side.back {
     transform: rotateY(0deg);
+  }
+
+  .tooltip-arrow {
+    display: block;
+    content: "";
+    position: absolute;
+    left: -5px;
+    top: 50%;
+    margin-top: -5px;
+    width: 2px;
+    height: 2px;
+    background: #fff;
+    transform: rotate(45deg);
   }
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import Tooltip from "@/global/Tooltip";
 
 import {
   PencilSquareIcon,
@@ -8,10 +8,10 @@ import {
 } from "@heroicons/react/24/outline";
 
 enum ButtonType {
-  Edit,
-  Folder,
-  Share,
-  More,
+  Edit = "Edit",
+  Folder = "Add to Folder",
+  Share = "Share",
+  More = "More",
 }
 
 type Props = {
@@ -72,9 +72,11 @@ const SettingButton = ({ type }: { type: ButtonType }) => {
   };
 
   return (
-    <button className="neumorphism h-full w-full rounded-full p-2 transition-all ease-in-out">
-      {getIcon(type)}
-    </button>
+    <Tooltip text={type} marginTop={10}>
+      <button className="neumorphism h-full w-full rounded-full p-2 transition-all ease-in-out">
+        {getIcon(type)}
+      </button>
+    </Tooltip>
   );
 };
 

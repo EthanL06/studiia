@@ -1,7 +1,13 @@
-import { PropsWithChildren, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 
-import { MagnifyingGlassIcon, MoonIcon } from "@heroicons/react/24/solid";
+import Tooltip from "./Tooltip";
+import {
+  Bars3Icon,
+  MagnifyingGlassIcon,
+  MoonIcon,
+  PlusIcon,
+} from "@heroicons/react/24/solid";
 import Logo from "@/assets/studia_logo.svg";
 
 type LinkData = {
@@ -33,22 +39,22 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`sticky top-0 z-50 flex h-full items-center justify-between border-b-2 bg-white px-8 py-2 transition-shadow duration-200 ease-in-out 3xl:mx-[16%] ${
+      className={`sticky top-0 z-50 flex h-full items-center justify-around border-b-2 bg-white px-8 py-2 transition-shadow duration-200 ease-in-out lg:justify-between 3xl:mx-[16%] ${
         scrolled ? "shadow-lg" : ""
       }`}
     >
       <a href="/" className="flex items-center">
         <Image src={Logo} height={48} alt="Studia Logo" />
-        <span className="text-4xl font-bold">Studia</span>
+        <span className="text-4xl font-bold">Studiia</span>
       </a>
 
-      <div className="ml-28 flex gap-x-8">
+      <div className="flex items-center gap-x-8 lg:ml-28">
         {links.map(({ href, label }) => (
           <NavLink key={href} href={href} label={label} />
         ))}
       </div>
 
-      <div className="flex items-center gap-x-8">
+      <div className="hidden items-center gap-x-8 lg:flex">
         <div className="flex gap-x-3">
           <Button title={"Search"}>
             <MagnifyingGlassIcon
@@ -65,11 +71,14 @@ const Navbar = () => {
             />
           </Button>
 
-          <div className="flex items-center">
-            <button className="rounded-md bg-secondary/80 px-6 py-3 font-semibold text-white transition-all ease-in-out hover:drop-shadow-[4px_4px_4px_rgba(0,0,0,0.25)]">
-              New
-            </button>
-          </div>
+          <Button title="New">
+            <PlusIcon
+              strokeWidth={2}
+              strokeLinecap="round"
+              fill="none"
+              className="h-6 w-6 rounded-lg stroke-secondary"
+            />
+          </Button>
         </div>
 
         <img
@@ -78,6 +87,12 @@ const Navbar = () => {
           alt="Profile Picture"
         />
       </div>
+
+      <Bars3Icon
+        strokeWidth={1.5}
+        fill="none"
+        className="block h-6 w-6 stroke-slate-400 lg:hidden"
+      />
     </nav>
   );
 };
@@ -93,14 +108,19 @@ const NavLink = ({ href, label }: LinkData) => {
   );
 };
 
-const Button: React.FC<PropsWithChildren<any>> = ({ children, title }) => {
+const Button = ({
+  children,
+  title,
+}: {
+  children: React.ReactNode;
+  title: string;
+}) => {
   return (
-    <button
-      title={title}
-      className="hover:neumorphism h-full w-full rounded-full p-4 transition-all ease-in-out"
-    >
-      {children}
-    </button>
+    <Tooltip text={title} marginTop={20}>
+      <button className="hover:neumorphism h-full w-full rounded-full p-4 transition-all ease-in-out">
+        {children}
+      </button>
+    </Tooltip>
   );
 };
 

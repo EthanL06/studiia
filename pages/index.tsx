@@ -10,7 +10,7 @@ import StatsGroup from "@/sets/StatsGroup";
 
 function Term({ term, definition }: { term: string; definition: string }) {
   return (
-    <div className="relative flex flex-row justify-between gap-x-4 rounded-lg border-2 border-slate-200 bg-white p-4">
+    <div className="container relative flex flex-row justify-between gap-x-4 rounded-lg border-2 border-slate-200 bg-white p-4">
       <div className="min-w-[40%] max-w-[40%] text-xl font-semibold">
         {term}
       </div>
@@ -40,7 +40,7 @@ const Home: NextPage = () => {
           <StatsGroup learning={3} reviewing={2} mastered={15} />
         </main>
 
-        <div className="relative mt-8 flex w-full justify-center rounded-t-3xl bg-slate-300/25 px-[18rem] pt-10 pb-32">
+        <div className="relative mt-8 flex w-full justify-center rounded-t-3xl bg-slate-300/25 px-12 pt-10 pb-32 lg:px-[18rem]">
           <div className="flex flex-col gap-y-3">
             <div className="mb-4 text-3xl font-bold">20 terms</div>
 

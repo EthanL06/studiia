@@ -14,19 +14,42 @@ type FlashCardProps = {
 };
 const Flashcard = ({ term, definition }: FlashCardProps) => {
   const [click, setClick] = useState(false);
+  const [index, setIndex] = useState(1);
 
-  const handleClick = () => {
-    setClick(!click);
+  const handleClick = (e: React.SyntheticEvent) => {
+    switch (e.currentTarget.id) {
+      case "left":
+        setIndex(index - 1);
+        e.stopPropagation();
+        break;
+      case "right":
+        setIndex(index + 1);
+        e.stopPropagation();
+        break;
+      default:
+        setClick(!click);
+        break;
+    }
   };
 
   return (
-    <Tilt tiltReverse={true} perspective={1000}>
+    <Tilt tiltReverse={true} perspective={4000}>
       <div
         className={`card container mt-8 mb-10 ${click ? "rotate" : ""}`}
         onClick={handleClick}
       >
-        <Side type={Direction.Front} text={term} />
-        <Side type={Direction.Back} text={definition} />
+        <Side
+          type={Direction.Front}
+          text={term}
+          index={index}
+          handleClick={handleClick}
+        />
+        <Side
+          type={Direction.Back}
+          text={definition}
+          index={index}
+          handleClick={handleClick}
+        />
       </div>
     </Tilt>
   );
@@ -37,9 +60,16 @@ export default Flashcard;
 type SideProps = {
   text: string;
   type: Direction;
+  index: number;
+  handleClick: (e: React.SyntheticEvent) => void;
 };
 
-const Side = ({ text = "...", type = Direction.Front }: SideProps) => {
+const Side = ({
+  text = "...",
+  type = Direction.Front,
+  index,
+  handleClick,
+}: SideProps) => {
   return (
     <div
       className={`${
@@ -56,7 +86,11 @@ const Side = ({ text = "...", type = Direction.Front }: SideProps) => {
 
       <div className="absolute top-2">
         <div className="flex w-full items-center justify-between gap-x-4 p-4 text-white">
-          <button className="rounded-full p-2 hover:bg-black/10">
+          <button
+            id="left"
+            className="z-10 rounded-full p-2 hover:bg-black/10"
+            onClick={handleClick}
+          >
             <ChevronLeftIcon
               stroke="currentColor"
               strokeWidth={2}
@@ -66,9 +100,13 @@ const Side = ({ text = "...", type = Direction.Front }: SideProps) => {
             />
           </button>
 
-          <p className="font-semibold">1/20</p>
+          <p className="font-semibold">{index}/20</p>
 
-          <button className="rounded-full p-2 hover:bg-black/10">
+          <button
+            id="right"
+            className="z-10 rounded-full p-2 hover:bg-black/10"
+            onClick={handleClick}
+          >
             <ChevronRightIcon
               stroke="currentColor"
               strokeWidth={2}
