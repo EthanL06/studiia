@@ -82,8 +82,8 @@ const Navbar = () => {
         </div>
 
         <img
-          src="https://thispersondoesnotexist.com/image"
-          className="h-16 rounded-full border-2"
+          src={"https://thispersondoesnotexist.com/image"}
+          className="h-16 w-16 rounded-full border-2"
           alt="Profile Picture"
         />
       </div>
