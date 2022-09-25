@@ -4,7 +4,7 @@
 
 @layer base {
   html {
-    @apply text-primary;
+    @apply text-primary overflow-x-hidden;
   }
 }
 
@@ -106,10 +106,10 @@
   }
 
   .slide-left {
-    animation: slide-left 0.75s ease-in-out;
+    animation: slide-left 0.6s ease-in-out;
   }
 
   .slide-right {
-    animation: slide-left 0.75s ease-in-out reverse;
+    animation: slide-left 0.6s ease-in-out reverse;
   }
 }

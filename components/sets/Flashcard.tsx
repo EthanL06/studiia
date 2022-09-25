@@ -25,13 +25,11 @@ const Flashcard = () => {
 
       setTimeout(() => {
         setIndex(index + 1);
-      }, 375);
+      }, 300);
 
       setTimeout(() => {
         flashcard?.classList.remove("slide-left");
-      }, 750);
-
-      setIndex(index + 1);
+      }, 600);
     },
     onSwipedRight: () => {
       if (index - 1 < 1) return;
@@ -41,11 +39,11 @@ const Flashcard = () => {
 
       setTimeout(() => {
         setIndex(index - 1);
-      }, 375);
+      }, 300);
 
       setTimeout(() => {
         flashcard?.classList.remove("slide-right");
-      }, 750);
+      }, 600);
     },
   });
 
@@ -74,6 +72,7 @@ const Flashcard = () => {
       tiltReverse={true}
       tiltMaxAngleX={15}
       tiltMaxAngleY={10}
+      className="overflow-hidden rounded-2xl"
     >
       <div
         id="flashcard"
