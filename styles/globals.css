@@ -6,6 +6,10 @@
   html {
     @apply text-primary overflow-x-hidden;
   }
+
+  body {
+    @apply overflow-x-hidden relative;
+  }
 }
 
 @layer utilities {

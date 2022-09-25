@@ -1,64 +1,96 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import Tilt from "react-parallax-tilt";
-import { useSwipeable } from "react-swipeable";
+import {
+  motion,
+  useMotionValue,
+  useAnimationControls,
+  PanInfo,
+} from "framer-motion";
+
 import { TermsContext } from "contexts/TermsContext";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 
 enum Direction {
   Front,
   Back,
+  Left = -1,
+  Right = 1,
 }
 
 const Flashcard = () => {
   const { getTerm, getTermCount } = useContext(TermsContext);
-  const flashcardRef = useRef<HTMLDivElement>(null);
 
   const [click, setClick] = useState(false);
   const [index, setIndex] = useState(0);
 
-  const handlers = useSwipeable({
-    onSwipedLeft: () => {
-      if (index + 1 > getTermCount()) return;
+  const [dragging, setDragging] = useState(false);
+  const [drag, setDrag] = useState<any>("x");
 
-      const flashcard = document.querySelector("#flashcard");
-      flashcard?.classList.add("slide-left");
+  const controls = useAnimationControls();
+  const x = useMotionValue(0);
 
-      setTimeout(() => {
-        setIndex(index + 1);
-      }, 300);
+  const cardElem = useRef<HTMLDivElement>(null);
 
-      setTimeout(() => {
-        flashcard?.classList.remove("slide-left");
-      }, 600);
-    },
-    onSwipedRight: () => {
-      if (index - 1 < 1) return;
+  const flyAway = async (e: Event, info: PanInfo) => {
+    if (Math.abs(info.offset.x) < 200) return;
 
-      const flashcard = document.querySelector("#flashcard");
-      flashcard?.classList.add("slide-right");
+    const direction = info.offset.x > 0 ? Direction.Right : Direction.Left;
 
-      setTimeout(() => {
-        setIndex(index - 1);
-      }, 300);
+    if (direction === Direction.Right && index - 1 <= 0) return;
+    if (direction === Direction.Left && index + 1 > getTermCount()) return;
 
-      setTimeout(() => {
-        flashcard?.classList.remove("slide-right");
-      }, 600);
-    },
-  });
+    setDrag(false);
+    await sequence(direction);
+    setDragging(false);
+    setDrag("x");
+  };
+
+  const sequence = async (direction: Direction) => {
+    // get width of screen
+    const width = window.innerWidth;
+
+    await controls.start({
+      x: width * direction,
+    });
+    changeIndex(direction * -1);
+    controls.set({
+      x: width * direction * -1,
+    });
+    return controls.start({
+      x: 0,
+      transition: {
+        type: "spring",
+        stiffness: 1000,
+        damping: 100,
+        restDelta: 1,
+        restSpeed: 1,
+        duration: 0.5,
+      },
+    });
+  };
+
+  const changeIndex = (direction: Direction) => {
+    if (direction === Direction.Left) {
+      setIndex((prev) => prev - 1);
+    } else {
+      setIndex((prev) => prev + 1);
+    }
+  };
 
   const handleClick = (e: React.SyntheticEvent) => {
+    if (dragging) return;
     switch (e.currentTarget.id) {
       case "left":
         e.stopPropagation();
+        if (index - 1 < 1) return;
 
-        setIndex(index - 1);
+        changeIndex(Direction.Left);
         break;
       case "right":
         e.stopPropagation();
         if (index + 1 > getTermCount()) return;
 
-        setIndex(index + 1);
+        changeIndex(Direction.Right);
         break;
       default:
         setClick(!click);
@@ -67,33 +99,55 @@ const Flashcard = () => {
   };
 
   return (
-    <Tilt
-      tiltEnable={useWindowWide(360)}
-      tiltReverse={true}
-      tiltMaxAngleX={15}
-      tiltMaxAngleY={10}
-      className="overflow-hidden rounded-2xl"
+    <motion.div
+      animate={controls}
+      drag={drag}
+      dragElastic={0.75}
+      dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+      onDrag={() => {
+        setDragging(true);
+      }}
+      onDragEnd={flyAway}
+      style={{ x }}
+      transition={{
+        type: "spring",
+        stiffness: 1000,
+        damping: 100,
+        restDelta: 1,
+        restSpeed: 1,
+      }}
+      whileDrag={{ cursor: "grabbing" }}
+      whileHover={{ cursor: "pointer" }}
+      dragSnapToOrigin={true}
     >
-      <div
-        id="flashcard"
-        className={`hover:cursor-pointer ${click ? "rotate" : ""}`}
-        onClick={handleClick}
-        {...handlers}
+      <Tilt
+        tiltEnable={useWindowWide(360)}
+        tiltReverse={false}
+        tiltMaxAngleX={10}
+        tiltMaxAngleY={10}
+        className="rounded-2xl"
       >
-        <Side
-          type={Direction.Front}
-          text={getTerm(index - 1)?.term || "Term"}
-          index={index}
-          handleClick={handleClick}
-        />
-        <Side
-          type={Direction.Back}
-          text={getTerm(index - 1)?.definition || "Definition"}
-          index={index}
-          handleClick={handleClick}
-        />
-      </div>
-    </Tilt>
+        <div
+          id="flashcard"
+          className={`${click ? "rotate" : ""}`}
+          onClick={handleClick}
+          ref={cardElem}
+        >
+          <Side
+            type={Direction.Front}
+            text={getTerm(index - 1)?.term || "Term"}
+            index={index}
+            handleClick={handleClick}
+          />
+          <Side
+            type={Direction.Back}
+            text={getTerm(index - 1)?.definition || "Definition"}
+            index={index}
+            handleClick={handleClick}
+          />
+        </div>
+      </Tilt>
+    </motion.div>
   );
 };
 
@@ -187,7 +241,7 @@ const Side = ({
         </div>
       </div>
 
-      <div className="absolute left-0 right-0 -bottom-5 -z-10 mx-auto hidden h-5 rounded-b-[15px] bg-slate-200 sm:block sm:w-[33rem]"></div>
+      <div className="absolute left-0 right-0 -bottom-5 -z-10 mx-auto hidden h-5 rounded-b-[15px] bg-slate-200 sm:block sm:w-[33rem]" />
     </div>
   );
 };
