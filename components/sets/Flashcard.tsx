@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import Tilt from "react-parallax-tilt";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
@@ -12,6 +12,7 @@ type FlashCardProps = {
   term: string;
   definition: string;
 };
+
 const Flashcard = ({ term, definition }: FlashCardProps) => {
   const [click, setClick] = useState(false);
   const [index, setIndex] = useState(1);
@@ -33,7 +34,12 @@ const Flashcard = ({ term, definition }: FlashCardProps) => {
   };
 
   return (
-    <Tilt tiltReverse={true} perspective={4000}>
+    <Tilt
+      tiltEnable={useWindowWide(360)}
+      tiltReverse={true}
+      tiltMaxAngleX={15}
+      tiltMaxAngleY={10}
+    >
       <div className={`card ${click ? "rotate" : ""}`} onClick={handleClick}>
         <Side
           type={Direction.Front}
@@ -52,7 +58,26 @@ const Flashcard = ({ term, definition }: FlashCardProps) => {
   );
 };
 
-export default Flashcard;
+const useWindowWide = (size: number) => {
+  const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    function handleResize() {
+      setWidth(window.innerWidth);
+    }
+
+    window.addEventListener("resize", handleResize);
+
+    handleResize();
+
+    console.log(width);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [setWidth]);
+
+  return width > size;
+};
 
 type SideProps = {
   text: string;
@@ -123,3 +148,5 @@ const Side = ({
     </div>
   );
 };
+
+export default Flashcard;
