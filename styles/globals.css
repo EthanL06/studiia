@@ -60,13 +60,6 @@
     font-size: clamp(1rem, 10vw, 2rem);
   }
 
-  .card {
-    perspective: 300rem;
-    position: relative;
-
-    @apply hover:cursor-pointer;
-  }
-
   .card-side {
     transition: all 0.8s ease;
     backface-visibility: hidden;
@@ -95,5 +88,28 @@
     height: 2px;
     background: #fff;
     transform: rotate(45deg);
+  }
+
+  @keyframes slide-left {
+    0% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(-200%);
+    }
+    51% {
+      transform: translateX(200%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+  .slide-left {
+    animation: slide-left 0.75s ease-in-out;
+  }
+
+  .slide-right {
+    animation: slide-left 0.75s ease-in-out reverse;
   }
 }

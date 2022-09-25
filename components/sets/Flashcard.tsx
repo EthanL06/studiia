@@ -1,9 +1,7 @@
-import React, { useState, useEffect, useContext } from "react";
-
+import React, { useState, useEffect, useContext, useRef } from "react";
 import Tilt from "react-parallax-tilt";
 import { useSwipeable } from "react-swipeable";
 import { TermsContext } from "contexts/TermsContext";
-
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 
 enum Direction {
@@ -13,6 +11,7 @@ enum Direction {
 
 const Flashcard = () => {
   const { getTerm, getTermCount } = useContext(TermsContext);
+  const flashcardRef = useRef<HTMLDivElement>(null);
 
   const [click, setClick] = useState(false);
   const [index, setIndex] = useState(0);
@@ -21,16 +20,31 @@ const Flashcard = () => {
     onSwipedLeft: () => {
       if (index + 1 > getTermCount()) return;
 
+      if (index - 1 < 1) return;
+      flashcardRef.current?.classList.add("slide-left");
+
       setTimeout(() => {
-        setIndex(index + 1);
-      }, 0);
+        setIndex(index - 1);
+      }, 375);
+
+      setTimeout(() => {
+        flashcardRef.current?.classList.remove("slide-left");
+      }, 750);
+
+      setIndex(index + 1);
     },
     onSwipedRight: () => {
       if (index - 1 < 1) return;
 
+      flashcardRef.current?.classList.add("slide-right");
+
       setTimeout(() => {
-        setIndex(index - 1);
-      }, 0);
+        setIndex(index + 1);
+      }, 375);
+
+      setTimeout(() => {
+        flashcardRef.current?.classList.remove("slide-right");
+      }, 750);
     },
   });
 
@@ -38,7 +52,6 @@ const Flashcard = () => {
     switch (e.currentTarget.id) {
       case "left":
         e.stopPropagation();
-        if (index - 1 < 1) return;
 
         setIndex(index - 1);
         break;
@@ -47,7 +60,6 @@ const Flashcard = () => {
         if (index + 1 > getTermCount()) return;
 
         setIndex(index + 1);
-
         break;
       default:
         setClick(!click);
@@ -64,7 +76,8 @@ const Flashcard = () => {
     >
       <div
         {...handlers}
-        className={`card ${click ? "rotate" : ""}`}
+        ref={flashcardRef}
+        className={`hover:cursor-pointer ${click ? "rotate" : ""}`}
         onClick={handleClick}
       >
         <Side
