@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 import Tilt from "react-parallax-tilt";
+import { useSwipeable } from "react-swipeable";
+import { TermsContext } from "contexts/TermsContext";
+
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 
 enum Direction {
@@ -8,24 +11,43 @@ enum Direction {
   Back,
 }
 
-type FlashCardProps = {
-  term: string;
-  definition: string;
-};
+const Flashcard = () => {
+  const { getTerm, getTermCount } = useContext(TermsContext);
 
-const Flashcard = ({ term, definition }: FlashCardProps) => {
   const [click, setClick] = useState(false);
-  const [index, setIndex] = useState(1);
+  const [index, setIndex] = useState(0);
+
+  const handlers = useSwipeable({
+    onSwipedLeft: () => {
+      if (index + 1 > getTermCount()) return;
+
+      setTimeout(() => {
+        setIndex(index + 1);
+      }, 0);
+    },
+    onSwipedRight: () => {
+      if (index - 1 < 1) return;
+
+      setTimeout(() => {
+        setIndex(index - 1);
+      }, 0);
+    },
+  });
 
   const handleClick = (e: React.SyntheticEvent) => {
     switch (e.currentTarget.id) {
       case "left":
-        setIndex(index - 1);
         e.stopPropagation();
+        if (index - 1 < 1) return;
+
+        setIndex(index - 1);
         break;
       case "right":
-        setIndex(index + 1);
         e.stopPropagation();
+        if (index + 1 > getTermCount()) return;
+
+        setIndex(index + 1);
+
         break;
       default:
         setClick(!click);
@@ -40,16 +62,20 @@ const Flashcard = ({ term, definition }: FlashCardProps) => {
       tiltMaxAngleX={15}
       tiltMaxAngleY={10}
     >
-      <div className={`card ${click ? "rotate" : ""}`} onClick={handleClick}>
+      <div
+        {...handlers}
+        className={`card ${click ? "rotate" : ""}`}
+        onClick={handleClick}
+      >
         <Side
           type={Direction.Front}
-          text={term}
+          text={getTerm(index - 1)?.term || "Term"}
           index={index}
           handleClick={handleClick}
         />
         <Side
           type={Direction.Back}
-          text={definition}
+          text={getTerm(index - 1)?.definition || "Definition"}
           index={index}
           handleClick={handleClick}
         />
@@ -92,6 +118,8 @@ const Side = ({
   index,
   handleClick,
 }: SideProps) => {
+  const { getTermCount } = useContext(TermsContext);
+
   return (
     <div
       className={`${
@@ -124,7 +152,9 @@ const Side = ({
             />
           </button>
 
-          <p className="font-semibold">{index}/20</p>
+          <p className="font-semibold">
+            {index}/{getTermCount()}
+          </p>
 
           <button
             id="right"
