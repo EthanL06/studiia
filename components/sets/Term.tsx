@@ -1,6 +1,6 @@
 function Term({ term, definition }: { term: string; definition: string }) {
   return (
-    <div className="container relative flex flex-col justify-between gap-y-4 gap-x-4 rounded-lg border-2 border-slate-200 bg-white p-4 sm:flex-row">
+    <div className="relative flex flex-col justify-between gap-y-4 gap-x-4 rounded-lg border-2 border-slate-200 bg-white p-4 sm:flex-row">
       <div className="break-words text-xl font-semibold sm:w-[40%] sm:min-w-[40%] sm:max-w-[40%]">
         {term}
       </div>

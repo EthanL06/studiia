@@ -56,29 +56,29 @@ const Navbar = () => {
 
       <div className="hidden items-center gap-x-8 lg:flex">
         <div className="flex gap-x-3">
-          <Button title={"Search"}>
+          <NavButton title={"Search"}>
             <MagnifyingGlassIcon
               strokeWidth={1.75}
               className="h-6 w-6 stroke-slate-400"
             />
-          </Button>
+          </NavButton>
 
-          <Button title={"Dark Mode"}>
+          <NavButton title={"Dark Mode"}>
             <MoonIcon
               strokeWidth={2.5}
               fill="none"
               className="h-6 w-6 stroke-slate-400"
             />
-          </Button>
+          </NavButton>
 
-          <Button title="New">
+          <NavButton title="New">
             <PlusIcon
               strokeWidth={2}
               strokeLinecap="round"
               fill="none"
               className="h-6 w-6 rounded-lg stroke-secondary"
             />
-          </Button>
+          </NavButton>
         </div>
 
         <img
@@ -108,7 +108,7 @@ const NavLink = ({ href, label }: LinkData) => {
   );
 };
 
-const Button = ({
+const NavButton = ({
   children,
   title,
 }: {
