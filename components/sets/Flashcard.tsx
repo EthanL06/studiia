@@ -20,15 +20,15 @@ const Flashcard = () => {
     onSwipedLeft: () => {
       if (index + 1 > getTermCount()) return;
 
-      if (index - 1 < 1) return;
-      flashcardRef.current?.classList.add("slide-left");
+      const flashcard = document.querySelector("#flashcard");
+      flashcard?.classList.add("slide-left");
 
       setTimeout(() => {
-        setIndex(index - 1);
+        setIndex(index + 1);
       }, 375);
 
       setTimeout(() => {
-        flashcardRef.current?.classList.remove("slide-left");
+        flashcard?.classList.remove("slide-left");
       }, 750);
 
       setIndex(index + 1);
@@ -36,14 +36,15 @@ const Flashcard = () => {
     onSwipedRight: () => {
       if (index - 1 < 1) return;
 
-      flashcardRef.current?.classList.add("slide-right");
+      const flashcard = document.querySelector("#flashcard");
+      flashcard?.classList.add("slide-right");
 
       setTimeout(() => {
-        setIndex(index + 1);
+        setIndex(index - 1);
       }, 375);
 
       setTimeout(() => {
-        flashcardRef.current?.classList.remove("slide-right");
+        flashcard?.classList.remove("slide-right");
       }, 750);
     },
   });
@@ -75,10 +76,10 @@ const Flashcard = () => {
       tiltMaxAngleY={10}
     >
       <div
-        {...handlers}
-        ref={flashcardRef}
+        id="flashcard"
         className={`hover:cursor-pointer ${click ? "rotate" : ""}`}
         onClick={handleClick}
+        {...handlers}
       >
         <Side
           type={Direction.Front}
