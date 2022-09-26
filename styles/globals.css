@@ -4,11 +4,11 @@
 
 @layer base {
   html {
-    @apply text-primary overflow-x-hidden;
+    @apply text-primary;
   }
 
   body {
-    @apply overflow-x-hidden relative;
+    @apply relative;
   }
 }
 
@@ -31,7 +31,7 @@
   }
 
   .hover-underline-animation:hover:after {
-    transform: scaleX(0.70);
+    transform: scaleX(0.7);
     transform-origin: center;
   }
 

@@ -3,10 +3,12 @@ import { usePopper } from "react-popper";
 
 const Tooltip = ({
   children,
+  disable = false,
   text,
   marginTop,
 }: {
   children: React.ReactNode;
+  disable?: boolean;
   text: string;
   marginTop: number;
 }) => {
@@ -19,6 +21,8 @@ const Tooltip = ({
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
     placement: "bottom",
   });
+
+  if (disable) return <div>{children}</div>;
 
   return (
     <div className="group">

@@ -32,6 +32,11 @@ const Flashcard = () => {
   const cardElem = useRef<HTMLDivElement>(null);
 
   const flyAway = async (e: Event, info: PanInfo) => {
+    setTimeout(() => {
+      setDragging(false);
+    }, 100);
+
+    console.log(drag, dragging, info.offset.x);
     if (Math.abs(info.offset.x) < 200) return;
 
     const direction = info.offset.x > 0 ? Direction.Right : Direction.Left;
@@ -167,7 +172,7 @@ const useWindowWide = (size: number) => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [setWidth]);
+  }, [width]);
 
   return width > size;
 };

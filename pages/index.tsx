@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 
 import { TermsContext, TermType } from "contexts/TermsContext";
 
@@ -15,12 +15,24 @@ import {
 
 const Home: NextPage = () => {
   const { terms, addTerm, getTermCount } = useContext(TermsContext);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    console.log(mobileMenuOpen);
+  }, [mobileMenuOpen]);
 
   return (
     <>
-      <Navbar />
+      <Navbar
+        mobileMenuOpen={mobileMenuOpen}
+        setMobileMenuOpen={setMobileMenuOpen}
+      />
 
-      <div className="flex w-full flex-col items-center">
+      <div
+        className={`flex w-full flex-col items-center overflow-x-hidden ${
+          mobileMenuOpen ? "hidden" : ""
+        }`}
+      >
         <main className="mt-10 flex w-full flex-col px-4 md:w-[44rem]">
           <HeaderInfo />
           <div className="my-10 flex flex-col-reverse gap-y-8 xxs:flex-col">
