@@ -36,7 +36,6 @@ const Flashcard = () => {
       setDragging(false);
     }, 100);
 
-    console.log(drag, dragging, info.offset.x);
     if (Math.abs(info.offset.x) < 200) return;
 
     const direction = info.offset.x > 0 ? Direction.Right : Direction.Left;
@@ -140,13 +139,13 @@ const Flashcard = () => {
         >
           <Side
             type={Direction.Front}
-            text={getTerm(index - 1)?.term || "Term"}
+            text={getTerm(index)?.term || "Term"}
             index={index}
             handleClick={handleClick}
           />
           <Side
             type={Direction.Back}
-            text={getTerm(index - 1)?.definition || "Definition"}
+            text={getTerm(index)?.definition || "Definition"}
             index={index}
             handleClick={handleClick}
           />
@@ -225,7 +224,7 @@ const Side = ({
           </button>
 
           <p className="font-semibold">
-            {index}/{getTermCount()}
+            {index + 1}/{getTermCount()}
           </p>
 
           <button

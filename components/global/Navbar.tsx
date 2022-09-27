@@ -22,20 +22,37 @@ const Navbar = ({
   mobileMenuOpen: boolean;
   setMobileMenuOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const [scrolled, setScrolled] = useState(false);
+  const [scrollDir, setScrollDir] = useState<"up" | "down">("up");
 
   useEffect(() => {
-    const handleScroll = () => {
-      const offset = window.scrollY;
-      if (offset > 25) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
+    const threshold = 0;
+    let lastScrollY = window.pageYOffset;
+    let ticking = false;
+
+    const updateScrollDir = () => {
+      const scrollY = window.pageYOffset;
+
+      if (Math.abs(scrollY - lastScrollY) < threshold) {
+        ticking = false;
+        return;
+      }
+      setScrollDir(scrollY > lastScrollY && scrollY > 0 ? "down" : "up");
+      lastScrollY = scrollY > 0 ? scrollY : 0;
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateScrollDir);
+        ticking = true;
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
-  }, []);
+    window.addEventListener("scroll", onScroll);
+    console.log(scrollDir);
+
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [scrollDir]);
 
   const links: LinkData[] = [
     { href: "/", label: "Dashboard" },
@@ -46,8 +63,8 @@ const Navbar = ({
   return (
     <>
       <nav
-        className={`sticky top-0 z-50 flex h-full items-center justify-between border-b-2 bg-white px-2 py-2 pr-5 transition-shadow duration-200 ease-in-out sm:px-8  3xl:mx-[16%] ${
-          scrolled ? "shadow-lg" : ""
+        className={`transition-translate sticky top-0 z-50 flex h-full items-center justify-between border-b-2 bg-white px-2 py-2 pr-5 duration-[600ms] ease-in-out sm:px-8  3xl:mx-[16%] ${
+          scrollDir === "down" ? "-translate-y-full" : ""
         }`}
       >
         <a href="/" className="flex items-center">
@@ -107,43 +124,17 @@ const Navbar = ({
         </div>
       </nav>
 
+      {/* Mobile Menu */}
       <div
         className={`${
           !mobileMenuOpen ? "hidden" : "flex"
-        } h-screen w-full flex-col md:hidden`}
+        } h-screen w-full flex-col px-4 md:hidden`}
       >
-        <div className="flex h-1/2 flex-col">
-          <img
-            src={"https://thispersondoesnotexist.com/image"}
-            className="h-24 w-24 rounded-full border-2"
-            alt="Profile Picture"
-          />
-          <div className="flex gap-x-3">
-            <NavButton title={"Search"}>
-              <MagnifyingGlassIcon
-                strokeWidth={1.75}
-                className="h-6 w-6 stroke-slate-400"
+                      <img
+                src={"https://thispersondoesnotexist.com/image"}
+                className="h-16 w-16 rounded-full border-2"
+                alt="Profile Picture"
               />
-            </NavButton>
-
-            <NavButton title={"Dark Mode"}>
-              <MoonIcon
-                strokeWidth={2.5}
-                fill="none"
-                className="h-6 w-6 stroke-slate-400"
-              />
-            </NavButton>
-
-            <NavButton title="New">
-              <PlusIcon
-                strokeWidth={2}
-                strokeLinecap="round"
-                fill="none"
-                className="h-6 w-6 rounded-lg stroke-secondary"
-              />
-            </NavButton>
-          </div>
-        </div>
       </div>
     </>
   );

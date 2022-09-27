@@ -31,7 +31,7 @@ const Tooltip = ({
       </div>
 
       <div
-        className="pointer-events-none invisible relative mt-1 rounded bg-primary px-2 py-2 text-center text-sm text-white opacity-0 transition-all  duration-150 ease-in-out group-hover:visible group-hover:opacity-100"
+        className="pointer-events-none invisible relative mt-1 rounded bg-primary px-2 py-2 text-center text-sm text-white opacity-0 transition-all duration-150 ease-in-out group-hover:visible group-hover:opacity-100"
         style={{ ...styles.popper, marginTop: `${marginTop}px` }}
         {...attributes.popper}
         ref={setPopperElement}

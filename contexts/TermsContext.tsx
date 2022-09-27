@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+import data from "./data";
 
 export type TermType = {
   term: string;
@@ -21,7 +22,7 @@ export const TermsContext = createContext({} as TermsContextType);
 export const TermsContextProvider = ({
   children,
 }: TermsContextProviderProps) => {
-  const [terms, setTerms] = useState<TermType[]>([]);
+  const [terms, setTerms] = useState<TermType[]>(data);
 
   const addTerm = (term: TermType) => {
     setTerms([...terms, term]);
