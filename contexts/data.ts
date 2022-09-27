@@ -87,7 +87,7 @@ export default [
   {
     term: "Heat of vaporization",
     definition:
-      "Water has a high heat of vaporization - a lot of energy to change from liquid to gas; evaporation has a cooling effect",
+      "Water has a high heat of vaporization - a lot of energy to change from liquid to gas; evaporation has a cooling effect freeze solid, making life impossible on Earth.Ice floats in liquid water because hydrogen bonds in ice are more ordered, making ice less dense than water. If ice sank, all bodies of water would eventually freeze solid, entually freeze solid, making life impossible on Earth.Ice floats in liquid water because hydrogen bonds in ice are more ordered, making ice less dense than water. If ice sank, all bodies of water would eventually freeze solid, making life impossible on Earth.Ice floats in liquid water because hydrogen bonds in ice are more ordered, making ice less dense than water. If ice sank, all bodies of water would eventually freeze solid, making life impos",
   },
   {
     term: "Test",

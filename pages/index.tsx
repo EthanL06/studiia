@@ -29,11 +29,11 @@ const Home: NextPage = () => {
       />
 
       <div
-        className={`flex w-full flex-col items-center overflow-x-hidden ${
-          mobileMenuOpen ? "hidden" : ""
+        className={`w-full flex-col items-center overflow-x-hidden sm:!flex ${
+          mobileMenuOpen ? "hidden" : "flex"
         }`}
       >
-        <main className="mt-10 flex w-full flex-col px-4 md:w-[44rem]">
+        <main className="flex w-full flex-col px-4 md:w-[44rem]">
           <HeaderInfo />
           <div className="my-10 flex flex-col-reverse gap-y-8 xxs:flex-col">
             <StudyButtonGroup />

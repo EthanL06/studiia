@@ -1,3 +1,5 @@
+// bug where user on mobile can't drag flashcard when click on text
+
 import React, { useState, useEffect, useContext, useRef } from "react";
 import Tilt from "react-parallax-tilt";
 import {
@@ -21,6 +23,7 @@ const Flashcard = () => {
   const { getTerm, getTermCount } = useContext(TermsContext);
 
   const [click, setClick] = useState(false);
+  const [direction, setDirection] = useState<Direction>(Direction.Front);
   const [index, setIndex] = useState(0);
 
   const [dragging, setDragging] = useState(false);
@@ -36,12 +39,12 @@ const Flashcard = () => {
       setDragging(false);
     }, 100);
 
-    if (Math.abs(info.offset.x) < 200) return;
+    if (Math.abs(info.velocity.x) < 2000) return;
 
-    const direction = info.offset.x > 0 ? Direction.Right : Direction.Left;
+    const direction = info.velocity.x > 0 ? Direction.Right : Direction.Left;
 
-    if (direction === Direction.Right && index - 1 <= 0) return;
-    if (direction === Direction.Left && index + 1 > getTermCount()) return;
+    if (direction === Direction.Right && index - 1 < 0) return;
+    if (direction === Direction.Left && index + 1 >= getTermCount()) return;
 
     setDrag(false);
     await sequence(direction);
@@ -86,17 +89,21 @@ const Flashcard = () => {
     switch (e.currentTarget.id) {
       case "left":
         e.stopPropagation();
-        if (index - 1 < 1) return;
+        if (index - 1 < 0) return;
 
         changeIndex(Direction.Left);
         break;
       case "right":
         e.stopPropagation();
-        if (index + 1 > getTermCount()) return;
+        if (index + 1 >= getTermCount()) return;
 
         changeIndex(Direction.Right);
         break;
       default:
+        setDirection((prev) => {
+          if (prev === Direction.Front) return Direction.Back;
+          return Direction.Front;
+        });
         setClick(!click);
         break;
     }
@@ -108,7 +115,7 @@ const Flashcard = () => {
       drag={drag}
       dragElastic={0.75}
       dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-      onDrag={() => {
+      onDrag={(e, info) => {
         setDragging(true);
       }}
       onDragEnd={flyAway}
@@ -142,12 +149,14 @@ const Flashcard = () => {
             text={getTerm(index)?.term || "Term"}
             index={index}
             handleClick={handleClick}
+            current={direction}
           />
           <Side
             type={Direction.Back}
             text={getTerm(index)?.definition || "Definition"}
             index={index}
             handleClick={handleClick}
+            current={direction}
           />
         </div>
       </Tilt>
@@ -181,6 +190,7 @@ type SideProps = {
   type: Direction;
   index: number;
   handleClick: (e: React.SyntheticEvent) => void;
+  current: Direction;
 };
 
 const Side = ({
@@ -188,6 +198,7 @@ const Side = ({
   type = Direction.Front,
   index,
   handleClick,
+  current,
 }: SideProps) => {
   const { getTermCount } = useContext(TermsContext);
 
@@ -198,7 +209,9 @@ const Side = ({
       } card-side neumorphism gradient flex-column flex h-[20rem] w-full rounded-lg bg-white py-2 pb-8`}
     >
       <div
-        className={`m-auto flex max-h-[100%] flex-initial flex-col overflow-y-auto p-2 pt-10 text-center ${
+        className={`m-auto flex max-h-[100%] flex-initial flex-col ${
+          current === type ? "overflow-y-auto" : "overflow-y-hidden"
+        } break-words p-2 pt-10 text-center transition-opacity duration-500 ${
           type === Direction.Front ? "text-4xl" : "text-xl"
         } font-semibold text-white`}
       >
