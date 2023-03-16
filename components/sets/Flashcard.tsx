@@ -206,14 +206,14 @@ const Side = ({
     <div
       className={`${
         type === Direction.Front ? "front relative" : "back absolute top-0"
-      } card-side neumorphism gradient flex-column flex h-[20rem] w-full rounded-lg bg-white py-2 pb-8`}
+      } card-side neumorphism gradient flex-column flex h-[20rem] w-full rounded-lg bg-white p-2 pb-8 `}
     >
       <div
         className={`m-auto flex max-h-[100%] flex-initial flex-col ${
           current === type ? "overflow-y-auto" : "overflow-y-hidden"
         } break-words p-2 pt-10 text-center transition-opacity duration-500 ${
           type === Direction.Front ? "text-4xl" : "text-xl"
-        } font-semibold text-white`}
+        } font-semibold text-white scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300 scrollbar-track-rounded-lg scrollbar-thumb-rounded`}
       >
         {text}
       </div>

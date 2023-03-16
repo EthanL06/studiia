@@ -1,6 +1,8 @@
-import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+
+import { NavbarContext } from "contexts/NavbarContext";
 
 import Tooltip from "./Tooltip";
 import {
@@ -11,6 +13,7 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/solid";
 import Logo from "@/assets/studia_logo.svg";
+import Link from "next/link";
 
 type LinkData = {
   href: string;
@@ -18,22 +21,17 @@ type LinkData = {
   classes?: string;
 };
 
-const Navbar = ({
-  mobileMenuOpen,
-  setMobileMenuOpen,
-}: {
-  mobileMenuOpen: boolean;
-  setMobileMenuOpen: Dispatch<SetStateAction<boolean>>;
-}) => {
+const Navbar = () => {
+  const { isNavbarOpen, setIsNavbarOpen } = useContext(NavbarContext);
   const [scrollDir, setScrollDir] = useState<"up" | "down">("up");
 
   useEffect(() => {
     const threshold = 0;
-    let lastScrollY = window.pageYOffset;
+    let lastScrollY = window.scrollY;
     let ticking = false;
 
     const updateScrollDir = () => {
-      const scrollY = window.pageYOffset;
+      const scrollY = window.scrollY;
 
       if (Math.abs(scrollY - lastScrollY) < threshold) {
         ticking = false;
@@ -66,14 +64,16 @@ const Navbar = ({
   return (
     <>
       <nav
-        className={`transition-translate sticky top-0 z-50 mb-10 flex h-full items-center justify-between border-b-2 bg-white px-2 py-2 pr-5 duration-[600ms] ease-in-out sm:px-8  3xl:mx-[16%] ${
+        className={`transition-translate sticky top-0 z-10 mb-10 flex h-full items-center justify-between border-b-2 bg-white px-2 py-2 pr-5 duration-[600ms] ease-in-out sm:px-8  3xl:mx-[16%] ${
           scrollDir === "down" ? "-translate-y-full" : ""
         }`}
       >
-        <a href="/" className="flex items-center">
-          <Image src={Logo} height={48} alt="Studia Logo" />
-          <span className="hidden text-4xl font-bold md:block">Studiia</span>
-        </a>
+        <Link href="/">
+          <div className="flex items-center hover:cursor-pointer">
+            <Image src={Logo} height={48} alt="Studiia Logo" />
+            <span className="hidden text-4xl font-bold md:block">Studiia</span>
+          </div>
+        </Link>
         <div className=" hidden items-center gap-x-8 sm:flex lg:ml-28">
           {links.map(({ href, label }) => (
             <NavLink key={href} href={href} label={label} />
@@ -112,19 +112,20 @@ const Navbar = ({
             alt="Profile Picture"
           />
         </div>
+
         <span className="block text-4xl font-bold sm:hidden">Studiia</span>
+
         <div className={`flex lg:hidden`}>
           <NavButton title="Menu" disableTooltip={true}>
             <AnimatePresence mode="popLayout">
-              {mobileMenuOpen ? (
+              {isNavbarOpen ? (
                 <motion.div
                   key={"x"}
                   initial={{ opacity: 0, rotate: 90 }}
                   animate={{ opacity: 1, rotate: 0 }}
-                  exit={{ opacity: 0, rotate: -90 }}
                 >
                   <XMarkIcon
-                    onClick={() => setMobileMenuOpen((prev) => !prev)}
+                    onClick={() => setIsNavbarOpen((prev) => !prev)}
                     strokeWidth={2}
                     fill="none"
                     className="block h-6 w-6 stroke-slate-400"
@@ -135,10 +136,9 @@ const Navbar = ({
                   key={"bars"}
                   initial={{ opacity: 0, rotate: 90 }}
                   animate={{ opacity: 1, rotate: 0 }}
-                  exit={{ opacity: 0, rotate: -90 }}
                 >
                   <Bars3Icon
-                    onClick={() => setMobileMenuOpen((prev) => !prev)}
+                    onClick={() => setIsNavbarOpen((prev) => !prev)}
                     strokeWidth={1.5}
                     fill="none"
                     className="block h-6 w-6 stroke-slate-400"
@@ -154,7 +154,7 @@ const Navbar = ({
 
       <div
         className={`${
-          !mobileMenuOpen ? "hidden" : "flex"
+          !isNavbarOpen ? "hidden" : "flex"
         }  w-full  flex-col items-center justify-between border-b-2 border-b-slate-300 px-4 pb-8 sm:flex-row md:mb-10 md:justify-around lg:hidden`}
       >
         <div className="flex items-center gap-x-4">
@@ -209,7 +209,7 @@ const Navbar = ({
 
       <div
         className={`${
-          !mobileMenuOpen ? "hidden" : "flex"
+          !isNavbarOpen ? "hidden" : "flex"
         } h-screen w-full flex-col pt-10 md:hidden`}
       >
         <div className="mt-8 flex flex-col text-center sm:hidden">

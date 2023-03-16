@@ -17,7 +17,8 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-parallax-tilt": "^1.7.67",
-    "react-popper": "^2.3.0"
+    "react-popper": "^2.3.0",
+    "tailwind-scrollbar": "^2.0.1"
   },
   "devDependencies": {
     "@types/node": "18.7.18",
