@@ -15,9 +15,10 @@ module.exports = {
         secondary: '#002BFF',
       },
       screens: {
+        'xxs': '360px',
         '3xl': '2000px',
       }
     }
   },
-  plugins: [],
+  plugins: [require('tailwind-scrollbar')({ nocompatible: true })],
 }

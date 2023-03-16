@@ -6,6 +6,10 @@
   html {
     @apply text-primary;
   }
+
+  body {
+    @apply relative;
+  }
 }
 
 @layer utilities {
@@ -27,7 +31,7 @@
   }
 
   .hover-underline-animation:hover:after {
-    transform: scaleX(0.75);
+    transform: scaleX(0.7);
     transform-origin: center;
   }
 
@@ -60,13 +64,6 @@
     font-size: clamp(1rem, 10vw, 2rem);
   }
 
-  .card {
-    perspective: 300rem;
-    position: relative;
-
-    @apply hover:cursor-pointer;
-  }
-
   .card-side {
     transition: all 0.8s ease;
     backface-visibility: hidden;
@@ -82,5 +79,41 @@
 
   .rotate .card-side.back {
     transform: rotateY(0deg);
+  }
+
+  .tooltip-arrow {
+    display: block;
+    content: "";
+    position: absolute;
+    left: -5px;
+    top: 50%;
+    margin-top: -5px;
+    width: 2px;
+    height: 2px;
+    background: #fff;
+    transform: rotate(45deg);
+  }
+
+  @keyframes slide-left {
+    0% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(-200%);
+    }
+    51% {
+      transform: translateX(200%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+  .slide-left {
+    animation: slide-left 0.6s ease-in-out;
+  }
+
+  .slide-right {
+    animation: slide-left 0.6s ease-in-out reverse;
   }
 }

@@ -21,6 +21,7 @@
       "@/sets/*": ["components/sets/*"],
       "@/public/*": ["public/*"],
       "@/assets/*": ["public/assets/*"],
+      "@/contexts/*": ["contexts/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

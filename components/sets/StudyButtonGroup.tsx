@@ -1,31 +1,14 @@
+import StyledButton from "../global/StyledButton";
+
 const StudyButtonGroup = () => {
   return (
-    <div className="mt-6 flex justify-between gap-x-8">
-      <StudyButton title={"Learn"} />
-      <StudyButton title={"Flashcards"} />
-      <StudyButton title={"Test"} />
-    </div>
-  );
-};
-
-const StudyButton = ({
-  title,
-  children,
-}: {
-  title: string;
-  children?: React.ReactNode;
-}) => {
-  return (
-    <button
-      title={title}
-      className="neumorphism w-[10.5rem] rounded-lg border-2 border-secondary bg-white py-2"
-    >
-      {children ? (
-        children
-      ) : (
-        <p className="text-center text-xl font-bold">{title}</p>
-      )}
-    </button>
+    <>
+      <div className="flex flex-col justify-between gap-x-8 gap-y-4 xxs:flex-row">
+        <StyledButton text="Learn" className="text-xl" />
+        <StyledButton text="Flashcards" className="text-xl" />
+        <StyledButton text="Test" className="text-xl" />
+      </div>
+    </>
   );
 };
 

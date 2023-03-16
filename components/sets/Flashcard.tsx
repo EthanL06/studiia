@@ -1,62 +1,232 @@
-import React, { useState } from "react";
+// bug where user on mobile can't drag flashcard when click on text
 
+import React, { useState, useEffect, useContext, useRef } from "react";
 import Tilt from "react-parallax-tilt";
+import {
+  motion,
+  useMotionValue,
+  useAnimationControls,
+  PanInfo,
+} from "framer-motion";
+
+import { TermsContext } from "contexts/TermsContext";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 
 enum Direction {
   Front,
   Back,
+  Left = -1,
+  Right = 1,
 }
 
-type FlashCardProps = {
-  term: string;
-  definition: string;
-};
-const Flashcard = ({ term, definition }: FlashCardProps) => {
-  const [click, setClick] = useState(false);
+const Flashcard = () => {
+  const { getTerm, getTermCount } = useContext(TermsContext);
 
-  const handleClick = () => {
-    setClick(!click);
+  const [click, setClick] = useState(false);
+  const [direction, setDirection] = useState<Direction>(Direction.Front);
+  const [index, setIndex] = useState(0);
+
+  const [dragging, setDragging] = useState(false);
+  const [drag, setDrag] = useState<any>("x");
+
+  const controls = useAnimationControls();
+  const x = useMotionValue(0);
+
+  const cardElem = useRef<HTMLDivElement>(null);
+
+  const flyAway = async (e: Event, info: PanInfo) => {
+    setTimeout(() => {
+      setDragging(false);
+    }, 100);
+
+    if (Math.abs(info.velocity.x) < 2000) return;
+
+    const direction = info.velocity.x > 0 ? Direction.Right : Direction.Left;
+
+    if (direction === Direction.Right && index - 1 < 0) return;
+    if (direction === Direction.Left && index + 1 >= getTermCount()) return;
+
+    setDrag(false);
+    await sequence(direction);
+    setDragging(false);
+    setDrag("x");
+  };
+
+  const sequence = async (direction: Direction) => {
+    // get width of screen
+    const width = window.innerWidth;
+
+    await controls.start({
+      x: width * direction,
+    });
+    changeIndex(direction * -1);
+    controls.set({
+      x: width * direction * -1,
+    });
+    return controls.start({
+      x: 0,
+      transition: {
+        type: "spring",
+        stiffness: 1000,
+        damping: 100,
+        restDelta: 1,
+        restSpeed: 1,
+        duration: 0.5,
+      },
+    });
+  };
+
+  const changeIndex = (direction: Direction) => {
+    if (direction === Direction.Left) {
+      setIndex((prev) => prev - 1);
+    } else {
+      setIndex((prev) => prev + 1);
+    }
+  };
+
+  const handleClick = (e: React.SyntheticEvent) => {
+    if (dragging) return;
+    switch (e.currentTarget.id) {
+      case "left":
+        e.stopPropagation();
+        if (index - 1 < 0) return;
+
+        changeIndex(Direction.Left);
+        break;
+      case "right":
+        e.stopPropagation();
+        if (index + 1 >= getTermCount()) return;
+
+        changeIndex(Direction.Right);
+        break;
+      default:
+        setDirection((prev) => {
+          if (prev === Direction.Front) return Direction.Back;
+          return Direction.Front;
+        });
+        setClick(!click);
+        break;
+    }
   };
 
   return (
-    <Tilt tiltReverse={true} perspective={1000}>
-      <div
-        className={`card container mt-8 mb-10 ${click ? "rotate" : ""}`}
-        onClick={handleClick}
+    <motion.div
+      animate={controls}
+      drag={drag}
+      dragElastic={0.75}
+      dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+      onDrag={(e, info) => {
+        setDragging(true);
+      }}
+      onDragEnd={flyAway}
+      style={{ x }}
+      transition={{
+        type: "spring",
+        stiffness: 1000,
+        damping: 100,
+        restDelta: 1,
+        restSpeed: 1,
+      }}
+      whileDrag={{ cursor: "grabbing" }}
+      whileHover={{ cursor: "pointer" }}
+      dragSnapToOrigin={true}
+    >
+      <Tilt
+        tiltEnable={useWindowWide(360)}
+        tiltReverse={false}
+        tiltMaxAngleX={10}
+        tiltMaxAngleY={10}
+        className="rounded-2xl"
       >
-        <Side type={Direction.Front} text={term} />
-        <Side type={Direction.Back} text={definition} />
-      </div>
-    </Tilt>
+        <div
+          id="flashcard"
+          className={`${click ? "rotate" : ""}`}
+          onClick={handleClick}
+          ref={cardElem}
+        >
+          <Side
+            type={Direction.Front}
+            text={getTerm(index)?.term || "Term"}
+            index={index}
+            handleClick={handleClick}
+            current={direction}
+          />
+          <Side
+            type={Direction.Back}
+            text={getTerm(index)?.definition || "Definition"}
+            index={index}
+            handleClick={handleClick}
+            current={direction}
+          />
+        </div>
+      </Tilt>
+    </motion.div>
   );
 };
 
-export default Flashcard;
+const useWindowWide = (size: number) => {
+  const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    function handleResize() {
+      setWidth(window.innerWidth);
+    }
+
+    window.addEventListener("resize", handleResize);
+
+    handleResize();
+
+    console.log(width);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [width]);
+
+  return width > size;
+};
 
 type SideProps = {
   text: string;
   type: Direction;
+  index: number;
+  handleClick: (e: React.SyntheticEvent) => void;
+  current: Direction;
 };
 
-const Side = ({ text = "...", type = Direction.Front }: SideProps) => {
+const Side = ({
+  text = "...",
+  type = Direction.Front,
+  index,
+  handleClick,
+  current,
+}: SideProps) => {
+  const { getTermCount } = useContext(TermsContext);
+
   return (
     <div
       className={`${
         type === Direction.Front ? "front relative" : "back absolute top-0"
-      } card-side neumorphism gradient flex-column flex h-[20rem] w-full rounded-lg bg-white py-2 pb-8`}
+      } card-side neumorphism gradient flex-column flex h-[20rem] w-full rounded-lg bg-white p-2 pb-8 `}
     >
       <div
-        className={`m-auto flex max-h-[100%] flex-initial flex-col overflow-y-auto p-2 pt-10 text-center ${
+        className={`m-auto flex max-h-[100%] flex-initial flex-col ${
+          current === type ? "overflow-y-auto" : "overflow-y-hidden"
+        } break-words p-2 pt-10 text-center transition-opacity duration-500 ${
           type === Direction.Front ? "text-4xl" : "text-xl"
-        } font-semibold text-white`}
+        } font-semibold text-white scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300 scrollbar-track-rounded-lg scrollbar-thumb-rounded`}
       >
         {text}
       </div>
 
       <div className="absolute top-2">
         <div className="flex w-full items-center justify-between gap-x-4 p-4 text-white">
-          <button className="rounded-full p-2 hover:bg-black/10">
+          <button
+            id="left"
+            title="Previous"
+            type="button"
+            className="z-10 rounded-full p-2 hover:bg-black/10"
+            onClick={handleClick}
+          >
             <ChevronLeftIcon
               stroke="currentColor"
               strokeWidth={2}
@@ -66,9 +236,17 @@ const Side = ({ text = "...", type = Direction.Front }: SideProps) => {
             />
           </button>
 
-          <p className="font-semibold">1/20</p>
+          <p className="font-semibold">
+            {index + 1}/{getTermCount()}
+          </p>
 
-          <button className="rounded-full p-2 hover:bg-black/10">
+          <button
+            id="right"
+            title="Next"
+            type="button"
+            className="z-10 rounded-full p-2 hover:bg-black/10"
+            onClick={handleClick}
+          >
             <ChevronRightIcon
               stroke="currentColor"
               strokeWidth={2}
@@ -80,7 +258,9 @@ const Side = ({ text = "...", type = Direction.Front }: SideProps) => {
         </div>
       </div>
 
-      <div className="absolute left-0 right-0 -bottom-5 -z-10 mx-auto h-5 w-[33rem] rounded-b-[15px] bg-slate-200"></div>
+      <div className="absolute left-0 right-0 -bottom-5 -z-10 mx-auto hidden h-5 rounded-b-[15px] bg-slate-200 sm:block sm:w-[33rem]" />
     </div>
   );
 };
+
+export default Flashcard;

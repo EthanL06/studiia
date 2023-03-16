@@ -14,7 +14,7 @@ type StatsGroupProps = {
 
 const StatsGroup = ({ learning, reviewing, mastered }: StatsGroupProps) => {
   return (
-    <div className="mt-4 flex flex-row justify-around">
+    <div className="mt-4 flex flex-row justify-between md:justify-around">
       <Stat type={StatType.Learning} value={learning} />
       <Stat type={StatType.Reviewing} value={reviewing} />
       <Stat type={StatType.Mastered} value={mastered} />

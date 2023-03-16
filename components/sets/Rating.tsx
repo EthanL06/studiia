@@ -8,7 +8,7 @@ type RatingProps = {
 
 const Rating = ({ numOfReviews, averageRating }: RatingProps) => {
   return (
-    <>
+    <div className="mt-2 flex flex-col gap-y-2 gap-x-4 xxs:flex-row xxs:items-end">
       <div className="flex gap-x-2">
         {[...Array(5)].map((x, index) => (
           <Star filled={index < averageRating} key={index} />
@@ -19,7 +19,7 @@ const Rating = ({ numOfReviews, averageRating }: RatingProps) => {
           {numOfReviews} reviews
         </p>
       </div>
-    </>
+    </div>
   );
 };
 
